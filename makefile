@@ -67,3 +67,34 @@ down: ## Stop docker-compose
 
 clean: ## Clean build artifacts
 	rm -rf $(BIN_DIR)
+
+
+# =====================================================
+# Goose Migration
+# =====================================================
+
+GOOSE_DRIVER := mysql
+GOOSE_DBSTRING := "root:rootpwd@tcp(localhost:3306)/cmd_elastic_app?parseTime=true&multiStatements=true"
+MIGRATION_DIR := migration
+
+gs-status: ## Show migration status
+	GOOSE_DRIVER=$(GOOSE_DRIVER) GOOSE_DBSTRING=$(GOOSE_DBSTRING) goose -dir $(MIGRATION_DIR) status
+
+gs-up: ## Run all migrations
+	GOOSE_DRIVER=$(GOOSE_DRIVER) GOOSE_DBSTRING=$(GOOSE_DBSTRING) goose -dir $(MIGRATION_DIR) up
+
+gs-down: ## Roll back last migration
+	GOOSE_DRIVER=$(GOOSE_DRIVER) GOOSE_DBSTRING=$(GOOSE_DBSTRING) goose -dir $(MIGRATION_DIR) down
+
+gs-create: ## Create a new migration file: make migrate-create name=add_table
+	GOOSE_DRIVER=$(GOOSE_DRIVER) GOOSE_DBSTRING=$(GOOSE_DBSTRING) goose -dir $(MIGRATION_DIR) create $(name) sql
+
+gs-create-seed: ## Create a new seed file: make migrate-create-seed name=seed_users
+	GOOSE_DRIVER=$(GOOSE_DRIVER) GOOSE_DBSTRING=$(GOOSE_DBSTRING) goose -dir $(MIGRATION_DIR) create $(name)_seed sql
+
+gs-seed: ## Apply only seed migrations (file name contains "_seed")
+	@echo "==> Running only seed migrations…"
+	@for file in $(MIGRATION_DIR)/*_seed.sql; do \
+		echo "Applying $$file"; \
+		GOOSE_DRIVER=$(GOOSE_DRIVER) GOOSE_DBSTRING=$(GOOSE_DBSTRING) goose -dir $(MIGRATION_DIR) up-to $$(basename $$file | cut -d'_' -f1); \
+	done

@@ -1,0 +1,28 @@
+1. create migrations:
+
+make gs-create name=add_user_table
+
+
+2. Apply migration:
+
+make gs-up
+
+
+3. Rollback 1 step:
+
+make gs-down
+
+
+4. Rollback all version:
+
+make gs-reset
+
+
+5. Migration to version (with name):
+
+make gs-up-to v=20251115225900
+
+
+6. Check version migration:
+
+make gs-version
