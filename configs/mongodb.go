@@ -3,34 +3,21 @@ package configs
 import (
 	"context"
 	"log"
-	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-// var Mongo *mongo.Client
-
-func ConnectDB(config *Config) *mongo.Client {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(config.DBURI))
+func ConnectMongodb(ctx context.Context, config *Config) *mongo.Client {
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(config.MONGODB_URI))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	defer func() {
-		if err := client.Disconnect(ctx); err != nil {
-			panic(err)
-		}
-	}()
-
-	// Mongo = client
-
+	// Ping to verify connection works
 	if err := client.Ping(ctx, readpref.Primary()); err != nil {
-		log.Println("Can't connect to MongoDB")
+		log.Fatal("Can't connect to MongoDB: ", err)
 	}
 
 	return client

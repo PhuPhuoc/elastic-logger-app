@@ -89,6 +89,26 @@ services:
     networks:
       - elk-net
 
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672" # RabbitMQ port
+      - "15672:15672" # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - elk-net
+
 # =======================
 # Volumes
 # =======================
@@ -97,6 +117,7 @@ volumes:
   redis-data:
   es-data:
   mysql-data:
+  rabbitmq-data:
 
 # =======================
 # Network

@@ -9,7 +9,7 @@ import (
 // var ESClient *elastic.Client
 
 func ConnectElasticsearch(config *Config) *elastic.Client {
-	client, err := elastic.NewClient(elastic.SetURL(config.ESURL), elastic.SetSniff(false))
+	client, err := elastic.NewClient(elastic.SetURL(config.ELASTIC_URL), elastic.SetSniff(false))
 	if err != nil {
 		log.Fatal("Failed to connect to Elasticsearch:", err)
 	}
