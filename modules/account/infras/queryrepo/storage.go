@@ -2,12 +2,12 @@ package accountqueryrepo
 
 import "go.mongodb.org/mongo-driver/mongo"
 
-type accountCommandRepo struct {
+type AccountQueryRepo struct {
 	mongo *mongo.Client
 }
 
-func NewAccountRepo(mongo *mongo.Client) *accountCommandRepo {
-	return &accountCommandRepo{
+func NewAccountQueryRepo(mongo *mongo.Client) *AccountQueryRepo {
+	return &AccountQueryRepo{
 		mongo: mongo,
 	}
 }

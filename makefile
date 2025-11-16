@@ -98,3 +98,11 @@ gs-seed: ## Apply only seed migrations (file name contains "_seed")
 		echo "Applying $$file"; \
 		GOOSE_DRIVER=$(GOOSE_DRIVER) GOOSE_DBSTRING=$(GOOSE_DBSTRING) goose -dir $(MIGRATION_DIR) up-to $$(basename $$file | cut -d'_' -f1); \
 	done
+
+
+
+# =====================================================
+# sqlc generate 
+# =====================================================
+gen-account: ## generate sqlc for module account 
+	cd modules/account/infras/commandrepo && sqlc generate
